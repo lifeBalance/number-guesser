@@ -11,15 +11,15 @@
 // Variables
 let min         = 1;
 let max         = 10;
-let winningNum  = 3;
+let winningNum  = generateRandomNumber(min, max);
 let guessesLeft = 3;
 
 // UI elements
 const gameElem        = document.getElementById('game');
 const minNumElem      = document.querySelector('.min-num');
 const maxNumElem      = document.querySelector('.max-num');
-const guessBtnElem    = document.querySelector('#guess-btn');
 const guessInputElem  = document.querySelector('#guess-input');
+const guessBtnElem    = document.querySelector('#guess-btn');
 const messageElem     = document.querySelector('.message');
 
 // Assign UI min and max
@@ -31,9 +31,10 @@ guessBtnElem.addEventListener('click', (event) => {
   let guess = parseInt(guessInputElem.value);
 
   // Validate input
-  if (isNaN(guess) || guess < min || guess > max)
+  if (isNaN(guess) || guess < min || guess > max) {
     setMessage(`Please enter a number between ${min} and ${max}`, 'red');
-
+    return;
+  }
   // Check if the guess is correct
   if (guess == winningNum) {
     // GAME OVER: PLAYER WINS!
@@ -51,6 +52,15 @@ guessBtnElem.addEventListener('click', (event) => {
     } 
   }
 });
+
+// Register event listener for playing again
+gameElem.addEventListener('mousedown', function (event){
+  if (event.target.className === 'play-again') {
+    guessInputElem.value = '';
+    location.reload();
+  }
+});
+
 // Update UI
 function updateUI(won, msg) {
   let color;
@@ -58,6 +68,10 @@ function updateUI(won, msg) {
   guessInputElem.disabled = true;
   guessInputElem.style.borderColor = color;
   setMessage(msg, color);
+
+  // PLAY AGAIN
+  guessBtnElem.value = 'Play Again';
+  guessBtnElem.className += 'play-again';
 }
 
 function setMessage(msg, color) {
@@ -65,3 +79,6 @@ function setMessage(msg, color) {
   messageElem.textContent = msg;
 }
 
+function generateRandomNumber(min, max) {
+  return parseInt(Math.random() * (max - min + 1) + min);
+}
